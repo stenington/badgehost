@@ -1,6 +1,6 @@
 {
   "email": "example@example.com",
   "name": "Bob Example",
-  "url": "http://example.com/"
+  "url": "{{ host }}"
 }
   
