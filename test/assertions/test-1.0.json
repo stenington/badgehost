@@ -1,5 +1,5 @@
 {
-  "badge": "{{ server }}/badge.json",
+  "badge": "{{ assertions }}/badge.json",
   "evidence": "http://example.com/evidence.html",
   "issuedOn": 1373681532,
   "recipient": {

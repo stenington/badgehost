@@ -1,7 +1,7 @@
 {
   "criteria": "http://example.com/criteria.html",
   "description": "Recipient unbaked a badge! Maybe.\n",
-  "image": "{{ server }}/badge.png",
-  "issuer": "{{ server }}/issuer.json",
+  "image": "{{ static }}/badge.png",
+  "issuer": "{{ assertions }}/issuer.json",
   "name": "Test Assertions Demo Badge"
 }
