@@ -69,32 +69,41 @@ describe('App', function(){
 });
 
 describe('?set={...}', function(){
-  it('should set assertion values', function(done){
-    var obj = encodeURIComponent(JSON.stringify({
-      foo: 'bar',
-      recipient: {
-        foo: 'bar'
-      },
-      baz: {
-        foo: 'bar'
-      }
-    }));
-    request(app)
-      .get('/test.json?set=' + obj)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .end(function(err, res) {
-        if (err)
-          return done(err);
-        res.body.should.have.property('foo', 'bar');
-        res.body.should.have.property('recipient');
-        res.body.recipient.should.eql({ 'foo': 'bar' });
-        res.body.should.have.property('baz');
-        res.body.baz.should.eql({ 'foo': 'bar' });
-        done();
-      });
+  ['/test.json', '/1.0/test-1.0.json', '/0.5/test-0.5.json'].forEach(function(path) {
+    it('should set ' + path + ' values', function(done){
+      var obj = encodeURIComponent(JSON.stringify({
+        foo: 'bar',
+        recipient: {
+          foo: 'bar'
+        },
+        badge: {
+          foo: 'bar'
+        },
+        baz: {
+          foo: 'bar'
+        }
+      }));
+      request(app)
+        .get(path + '?set=' + obj)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+          if (err)
+            return done(err);
+          res.body.should.have.property('foo', 'bar');
+          res.body.should.have.property('recipient');
+          res.body.recipient.should.eql({ 'foo': 'bar' });
+          res.body.should.have.property('badge');
+          res.body.badge.should.eql({ 'foo': 'bar' });
+          res.body.should.have.property('baz');
+          res.body.baz.should.eql({ 'foo': 'bar' });
+          done();
+        });
+    });
   });
+});
 
+describe('?merge={...}', function(){
   it('should merge assertion values', function(done){
     var obj = encodeURIComponent(JSON.stringify({
       foo: 'bar',
