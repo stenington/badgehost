@@ -1,0 +1,1 @@
+exports.app = require('./lib/app');
