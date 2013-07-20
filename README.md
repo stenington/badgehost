@@ -25,7 +25,8 @@ node bin/server.js
 By default `badgehost` runs on port 8888, hosts the static files in `static/`,
 and the assertions in `assertions/`.
 
-Visit http://localhost:8888/demo.json, for example, to see that assertion.
+Visit http://localhost:8888/demo.json, for example, to see that assertion; or visit
+http://localhost:8888/ for a simple helper page.
 
 ### Environment Variables
 
