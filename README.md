@@ -10,6 +10,8 @@ fully qualified URLs.
 
 [assertions]: https://github.com/mozilla/openbadges/wiki/Assertions
 
+[![Build Status](https://travis-ci.org/stenington/badgehost.png)](https://travis-ci.org/stenington/badgehost)
+
 ## Quick Start
 
 ```
