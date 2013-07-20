@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+<style>
+  body {
+    max-width: 960px;
+    margin: auto;
+  }
+  .json-in {
+    height: 14em;
+  }
+</style>
+
+<body>
+  <h1>badgehost</h1>
+
+  <p>
+    View the <a href="https://github.com/stenington/badgehost#badgehost">README</a> 
+    for more information.
+  </p>
+
+  <h2>Build URLs</h2>
+  <form class="pure-form pure-form-stacked" method="POST" action="/">
+    <fieldset>
+      <legend>Select base</legend>
+      <label for="useBlank" class="pure-radio">
+        <input type="radio" id="useBlank" name="base" value="useBlank" checked>
+        Start from scratch
+      </label>
+      <label for="useFile" class="pure-radio">
+        <input type="radio" id="useFile" name="base" value="useFile" {% if not (files and files.length) %}disabled{% endif %}>
+        Use file
+      </label>
+      <select name="file" id="file">
+        {% for file in files %}
+        <option value="{{file}}">{{ file }}</option>
+        {% endfor %}
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Modify it</legend>
+      <label for="set" class="pure-radio">
+        <input type="radio" id="set" name="query" value="set"> set
+      </label>
+      <label for="merge" class="pure-radio">
+        <input type="radio" id="merge" name="query" value="merge"> merge
+        <input type="checkbox" id="deepMerge" name="deepMerge"> deep
+      </label>
+      <textarea id="json" class="json-in pure-input-1" name="json" placeholder="JSON"></textarea>
+    </fieldset>
+    
+    <button type="submit" class="pure-button pure-button-primary">Build</button>
+  </form>
+</body>

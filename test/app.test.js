@@ -219,6 +219,11 @@ describe('#path', function() {
     path.should.include('merge=' + obj);
     path.should.include('deep=1');
   });
+
+  it('should skip params if none specified', function() {
+    app.path('foo.json', {}).should.equal('/foo.json');
+    app.path('foo.json').should.equal('/foo.json');
+  });
 });
 
 describe('Assertion templating', function() {
