@@ -69,7 +69,9 @@ nested objects.*
 
 `badgehost` can also be included as a module in a project.
 
-```
+### Example
+
+``` javascript
 var badgehost = require('badgehost');
 var app = badgehost.app.build({
   staticDir: __dirname + '/static',
