@@ -66,17 +66,75 @@ describe('App', function(){
     });
   });
 
-});
+  describe('?set={...}', function(){
+    ['/test.json', '/1.0/test-1.0.json', '/0.5/test-0.5.json'].forEach(function(path) {
+      it('should set ' + path + ' values', function(done){
+        var obj = encodeURIComponent(JSON.stringify({
+          foo: 'bar',
+          recipient: {
+            foo: 'bar'
+          },
+          badge: {
+            foo: 'bar'
+          },
+          baz: {
+            foo: 'bar'
+          }
+        }));
+        request(app)
+          .get(path + '?set=' + obj)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res) {
+            if (err)
+              return done(err);
+            res.body.should.have.property('foo', 'bar');
+            res.body.should.have.property('recipient');
+            res.body.recipient.should.eql({ 'foo': 'bar' });
+            res.body.should.have.property('badge');
+            res.body.badge.should.eql({ 'foo': 'bar' });
+            res.body.should.have.property('baz');
+            res.body.baz.should.eql({ 'foo': 'bar' });
+            done();
+          });
+      });
+    });
+  });
 
-describe('?set={...}', function(){
-  ['/test.json', '/1.0/test-1.0.json', '/0.5/test-0.5.json'].forEach(function(path) {
-    it('should set ' + path + ' values', function(done){
+  describe('?merge={...}', function(){
+    ['/test-0.5.json', '/0.5/test-0.5.json'].forEach(function(path) {
+      it('should merge ' + path + ' values', function(done){
+        var obj = encodeURIComponent(JSON.stringify({
+          foo: 'bar',
+          badge: {
+            foo: 'bar'
+          },
+          baz: {
+            foo: 'bar'
+          }
+        }));
+        request(app)
+          .get(path + '?merge=' + obj)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res) {
+            if (err)
+              return done(err);
+            res.body.should.have.property('foo', 'bar');
+            res.body.should.have.property('badge');
+            res.body.badge.should.have.property('foo', 'bar');
+            res.body.badge.should.have.property('name'); // pre-existing in test.json
+            res.body.should.have.property('baz');
+            res.body.baz.should.eql({ 'foo': 'bar' });
+            done();
+          });
+      });
+    });
+
+    it('should merge /1.0/test-1.0.json values', function(done) {
       var obj = encodeURIComponent(JSON.stringify({
         foo: 'bar',
         recipient: {
-          foo: 'bar'
-        },
-        badge: {
           foo: 'bar'
         },
         baz: {
@@ -84,7 +142,7 @@ describe('?set={...}', function(){
         }
       }));
       request(app)
-        .get(path + '?set=' + obj)
+        .get('/1.0/test-1.0.json?merge=' + obj)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
@@ -92,43 +150,74 @@ describe('?set={...}', function(){
             return done(err);
           res.body.should.have.property('foo', 'bar');
           res.body.should.have.property('recipient');
-          res.body.recipient.should.eql({ 'foo': 'bar' });
-          res.body.should.have.property('badge');
-          res.body.badge.should.eql({ 'foo': 'bar' });
+          res.body.recipient.should.have.property('foo', 'bar');
+          res.body.recipient.should.have.property('hashed'); // pre-existing in test-1.0.json
           res.body.should.have.property('baz');
           res.body.baz.should.eql({ 'foo': 'bar' });
           done();
         });
     });
+
+    describe('with ?deep=1', function(){
+      it('should deep-merge /1.0/test-1.0.json values', function(done) {
+        var obj = encodeURIComponent(JSON.stringify({
+          badge: {
+            foo: 'bar',
+            issuer: {
+              foo: 'bar'
+            }
+          }
+        }));
+        request(app)
+          .get('/1.0/test-1.0.json?deep=1&merge=' + obj)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res) {
+            if (err)
+              return done(err);
+            res.body.should.have.property('badge');
+            res.body.badge.should.be.a('string');
+            request(res.body.badge)
+              .get('')
+              .expect('Content-Type', /json/)
+              .end(function(err, res) {
+                if (err)
+                  return done(err);
+                res.body.should.have.property('foo', 'bar');
+                res.body.should.have.property('issuer');
+                res.body.issuer.should.be.a('string');
+                res.body.issuer.should.include('?deep=1&merge=');
+                done();
+              });
+          });
+      });
+    });
+
+    it('should fail merging an object into a simple type', function(done) {
+      var obj = encodeURIComponent(JSON.stringify({
+        badge: {
+          something: 'complex'
+        }
+      }));
+      request(app)
+        .get('/1.0/test-1.0.json?merge=' + obj)
+        .expect(500, done);
+    });
   });
 });
 
-describe('?merge={...}', function(){
-  it('should merge assertion values', function(done){
-    var obj = encodeURIComponent(JSON.stringify({
-      foo: 'bar',
-      recipient: {
-        foo: 'bar'
-      },
-      baz: {
-        foo: 'bar'
-      }
-    }));
-    request(app)
-      .get('/test.json?merge=' + obj)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .end(function(err, res) {
-        if (err)
-          return done(err);
-        res.body.should.have.property('foo', 'bar');
-        res.body.should.have.property('recipient');
-        res.body.recipient.should.have.property('foo', 'bar');
-        res.body.recipient.should.have.property('hashed'); // pre-existing in test.json
-        res.body.should.have.property('baz');
-        res.body.baz.should.eql({ 'foo': 'bar' });
-        done();
-      });
+describe('#path', function() {
+  it('should set merge, set, and deep params', function() {
+    var path = app.path('foo.json', {
+      merge: { foo: 'bar' },
+      set: { foo: 'bar' },
+      deep: true
+    });
+    var obj = encodeURIComponent(JSON.stringify({ foo: 'bar' }));
+    path.should.match(/\/foo.json?/);
+    path.should.include('set=' + obj);
+    path.should.include('merge=' + obj);
+    path.should.include('deep=1');
   });
 });
 

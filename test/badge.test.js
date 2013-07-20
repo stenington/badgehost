@@ -1,7 +1,7 @@
 var should = require('should');
 var Badge = require('../lib/badge');
 
-describe('badge.parse', function(){
+describe('Badge.parse', function(){
   
   it('should parse "valid" assertions', function() {
     var badge = Badge.parse({
