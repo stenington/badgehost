@@ -11,7 +11,8 @@
   "devDependencies": {
     "should": "~1.2.2",
     "supertest": "~0.7.1",
-    "mocha": "~1.12.0"
+    "mocha": "~1.12.0",
+    "sinon": "~1.7.3"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --check-leaks test/*.test.js"
