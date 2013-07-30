@@ -73,13 +73,14 @@ describe('Routes', function(){
       it('should set ' + path + ' values', function(done){
         sinon.spy(badgehost.app, "set");
         request(app)
-          .get(path + '?set=' + encodeURIComponent('{}'))
+          .get(path + '?set=' + encodeURIComponent('{"foo":"bar"}'))
           .expect(200)
           .expect('Content-Type', /json/)
           .end(function(err, res) {
             if (err)
               return done(err);
             badgehost.app.set.calledOnce.should.be.true;
+            badgehost.app.set.firstCall.args[1].should.eql({ foo: "bar" });
             badgehost.app.set.restore();
             done();
           });
@@ -92,13 +93,14 @@ describe('Routes', function(){
       it('should merge ' + path + ' values', function(done){
         sinon.spy(badgehost.app, "merge");
         request(app)
-          .get(path + '?merge=' + encodeURIComponent('{}'))
+          .get(path + '?merge=' + encodeURIComponent('{"foo":"bar"}'))
           .expect(200)
           .expect('Content-Type', /json/)
           .end(function(err, res) {
             if (err)
               return done(err);
             badgehost.app.merge.called.should.be.true;
+            badgehost.app.merge.firstCall.args[1].should.eql({ foo: "bar" });
             badgehost.app.merge.restore();
             done();
           });
