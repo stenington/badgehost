@@ -6,7 +6,8 @@
   "main": "index.js",
   "dependencies": {
     "nunjucks": "~0.1.9",
-    "express": "~3.3.4"
+    "express": "~3.3.4",
+    "jws": "~0.2.2"
   },
   "devDependencies": {
     "should": "~1.2.2",

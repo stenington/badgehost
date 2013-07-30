@@ -1,6 +1,8 @@
 var path = require('path');
 var request = require('supertest');
 var should = require('should');
+var jws = require('jws');
+var keys = require('./test-keys');
 
 var badgehost = require('../');
 var app = badgehost.app.build({
@@ -39,6 +41,25 @@ describe('Assertion templating', function() {
           res.body.verify.url.should.include(res.req.path);
           done();
         });
+    });
+
+    describe('when signed', function(){
+
+      it('verify.url should be public key url', function(done) {
+        request(app)
+          .get('/test.json?sign=1')
+          .expect(200, function(err, res) {
+            if (err)
+              return done(err);
+            var signature = res.text;
+            jws.verify(signature, keys.public).should.be.true;
+            var assertion = JSON.parse(jws.decode(signature).payload);
+            assertion.verify.type.should.equal('signed');
+            assertion.verify.url.should.include(res.req._headers.host);
+            assertion.verify.url.should.include('public-key');
+            done();
+          });
+      });
     });
   });
 

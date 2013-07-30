@@ -2,6 +2,8 @@ var path = require('path');
 var request = require('supertest');
 var should = require('should');
 var sinon = require('sinon');
+var jws = require('jws');
+var keys = require('./test-keys');
 
 var badgehost = require('../');
 var app = badgehost.app.build({
@@ -65,6 +67,36 @@ describe('Routes', function(){
       request(app)
         .get('/1.0/test-0.5.json')
         .expect(409, done);
+    });
+  });
+
+  describe('?sign=1', function(){
+    it('should host public key at /public-key', function(done){
+      request(app)
+        .get('/public-key')
+        .expect(200)
+        .end(function(err, res) {
+          if (err)
+            return done(err);
+          res.text.should.equal(keys.public.toString());
+          done();
+        });
+    });
+
+    ['/test.json', '/1.0/test-1.0.json', '/0.5/test-0.5.json'].forEach(function(path) {
+      it('should return JSON Web Signature', function(done){
+        request(app)
+          .get(path + '?sign=1')
+          .expect(200)
+          .expect('Content-Type', /text/)
+          .end(function(err, res) {
+            if (err)
+              return done(err);
+            res.text.should.exist;
+            jws.verify(res.text, keys.public).should.be.true;
+            done();
+          });
+      });
     });
   });
 
