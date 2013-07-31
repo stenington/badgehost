@@ -10,7 +10,8 @@ console.log(STATIC, ASSERTION);
 
 var app = require('../').app.build({
   staticDir: STATIC,
-  assertionDir: ASSERTION
+  assertionDir: ASSERTION,
+  index: true
 });
 app.listen(PORT, function(){
   console.log("Listening on port " + PORT + ".");
