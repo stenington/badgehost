@@ -10,7 +10,12 @@
   },
   "uid": "me.unbaker",
   "verify": {
+    {% if signed %}
+    "type": "signed",
+    "url": "{{ key }}"
+    {% else %}
     "type": "hosted",
     "url": "{{ self }}"
+    {% endif %}
   }
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+<style>
+  body {
+    padding: 1em;
+    width: 500px;
+  }
+
+  textarea {
+    height: 20em;
+  }
+
+</style>
+
+<form class="pure-form pure-form-stacked">
+  <label>Copy and paste this JSON Web Signature:</label>
+  <textarea class="pure-input-1 signature" readonly>{{ signature }}</textarea>
+  <label>built from:</label>
+  <textarea class="pure-input-1" readonly>{{ assertion }}</textarea>
+</form>
