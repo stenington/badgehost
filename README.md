@@ -37,14 +37,18 @@ http://localhost:8888/ for a simple helper page.
 ## Template variables 
 
 `badgehost` provides a set of templating variables you can use in your assertion
-files:
+files. Templating is handled with [nunjucks], so most Jinja2 syntax is valid:
 
 * `host`: protocol, host, and port matching the request URL
 * `static`: host + path of static directory (currently same as host)
 * `assertions`: host + path of assertions route (currently same as host)
 * `self`: full URL of json object being rendered
+* `signed`: boolean indicating if the assertion should be signed
+* `publicKey`: full URL of the public key for signed assertions
 
 Use them in your assertion files with `{{ variable }}`.
+
+[nunjucks]: http://nunjucks.jlongster.com/templating
 
 ## Routes
 
@@ -67,6 +71,7 @@ nested objects.*
 * `?merge={..}` copies the specified properties into the assertion, recursing into nested objects.
 * `?deep=1` effectively lets the merge work across linked 1.0 objects. Objects specified in the 
   `merge` parameter where the assertion has a string will get appended as `?deep=1&merge={...}`.
+* `?sign=1` will present you with a copy-and-pastable signature built from the specified assertion
 
 ## Module
 
