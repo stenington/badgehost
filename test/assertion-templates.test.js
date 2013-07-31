@@ -1,7 +1,9 @@
+var express = require('express');
 var path = require('path');
 var request = require('supertest');
 var should = require('should');
 var cheerio = require('cheerio');
+var sinon = require('sinon');
 var jws = require('jws');
 var keys = require('./test-keys');
 
@@ -91,6 +93,29 @@ describe('Assertion templating', function() {
             return done(err);
           res.body.url.should.exist;
           res.body.url.should.equal('http://' + res.req._headers.host);
+          done();
+        });
+    });
+  });
+
+  describe('when mounted as a sub-app', function() {
+    var app = express();
+    var subApp = badgehost.app.build({
+      staticDir: path.join(__dirname, './static'),
+      assertionDir: path.join(__dirname, './assertions')
+    });
+    app.use('/sub', subApp);
+
+    sinon.spy(subApp, 'render');
+
+    it('host template local should include mount point', function(done) {
+      request(app)
+        .get('/sub/test.json')
+        .expect(200, function(err, res){
+          if (err)
+            return done(err);
+          var locals = subApp.render.firstCall.args[1]._locals;
+          locals.host.should.include('/sub');
           done();
         });
     });
