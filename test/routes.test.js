@@ -2,6 +2,7 @@ var path = require('path');
 var request = require('supertest');
 var should = require('should');
 var sinon = require('sinon');
+var cheerio = require('cheerio');
 var jws = require('jws');
 var keys = require('./test-keys');
 
@@ -92,8 +93,9 @@ describe('Routes', function(){
           .end(function(err, res) {
             if (err)
               return done(err);
-            res.text.should.exist;
-            jws.verify(res.text, keys.public).should.be.true;
+            var $ = cheerio.load(res.text);
+            var signature = $('.signature').text();
+            jws.verify(signature, keys.public).should.be.true;
             done();
           });
       });

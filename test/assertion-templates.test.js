@@ -1,6 +1,7 @@
 var path = require('path');
 var request = require('supertest');
 var should = require('should');
+var cheerio = require('cheerio');
 var jws = require('jws');
 var keys = require('./test-keys');
 
@@ -51,7 +52,8 @@ describe('Assertion templating', function() {
           .expect(200, function(err, res) {
             if (err)
               return done(err);
-            var signature = res.text;
+            var $ = cheerio.load(res.text);
+            var signature = $('.signature').text();
             jws.verify(signature, keys.public).should.be.true;
             var assertion = JSON.parse(jws.decode(signature).payload);
             assertion.verify.type.should.equal('signed');
