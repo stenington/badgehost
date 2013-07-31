@@ -119,5 +119,17 @@ describe('Assertion templating', function() {
           done();
         });
     });
+
+    it('origin template local should not include mount point', function(done) {
+      request(app)
+        .get('/sub/test.json')
+        .expect(200, function(err, res){
+          if (err)
+            return done(err);
+          var locals = subApp.render.firstCall.args[1]._locals;
+          locals.origin.should.not.include('/sub');
+          done();
+        });
+    });
   });
 });

@@ -39,7 +39,8 @@ http://localhost:8888/ for a simple helper page.
 `badgehost` provides a set of templating variables you can use in your assertion
 files. Templating is handled with [nunjucks], so most Jinja2 syntax is valid:
 
-* `host`: protocol, host, and port matching the request URL
+* `origin`: protocol, host, and port only matching the request URL
+* `host`: protocol, host, port and mount point, if any, matching the request URL
 * `static`: host + path of static directory (currently same as host)
 * `assertions`: host + path of assertions route (currently same as host)
 * `self`: full URL of json object being rendered

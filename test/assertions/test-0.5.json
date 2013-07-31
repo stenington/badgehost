@@ -11,7 +11,7 @@
     "description": "Knows the difference between a <section> and an <article>",
     "criteria": "/badges/html5-basic",
     "issuer": {
-      "origin": "{{ host }}",
+      "origin": "{{ origin }}",
       "name": "P2PU",
       "org": "Mechanical MOOC",
       "contact": "admin@p2pu.org"
