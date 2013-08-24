@@ -4,15 +4,13 @@ const path = require('path');
 
 const PORT = process.env['PORT'] || 8888; 
 
-const STATIC = process.env['STATIC_DIR'] || path.join(__dirname, '../static');
-const ASSERTION = process.env['ASSERTION_DIR'] || path.join(__dirname, '../assertions');
-console.log(STATIC, ASSERTION);
-
 var app = require('../').app.build({
-  staticDir: STATIC,
-  assertionDir: ASSERTION,
+  staticDir: process.env['STATIC_DIR'],
+  assertionDir: process.env['ASSERTION_DIR'],
   index: true
 });
 app.listen(PORT, function(){
   console.log("Listening on port " + PORT + ".");
+  console.log("Serving static files from " + app.staticDir + ".");
+  console.log("Serving assertions from " + app.assertionDir + ".");
 });
