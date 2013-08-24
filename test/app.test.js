@@ -11,6 +11,21 @@ app.listen(0);
 
 describe('App', function() {
   
+  describe('#url', function() {
+    it('should work', function(done) {
+      var app = App.build();
+
+      app.listen(function() {
+        var baseURL = 'http://127.0.0.1:' + this.address().port;
+        app.baseURL.should.eql(baseURL);
+        app.url('foo.json', {set: {x: 1}})
+          .should.eql(baseURL + '/foo.json?set=%7B%22x%22%3A1%7D');
+        this.close();
+        done();
+      });
+    });
+  });
+
   describe('#set', function() {
     it('should change specified values', function() {
       App.set({
