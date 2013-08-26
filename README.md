@@ -81,23 +81,37 @@ nested objects.*
 ### Example
 
 ``` javascript
-var badgehost = require('badgehost');
-var app = badgehost.app.build({
-  staticDir: __dirname + '/static',
-  assertionDir: __dirname + '/assertion'
-});
-app.listen(0, function(){
-  var port = this.address().port;
-  console.log('Now you can access your assertions at port ' + port);
+var app = require('badgehost').app.build();
+app.listen(function() {
+  console.log('Now you can access your assertions at ' + app.url());
 });
 ```
 
 ### Methods
 
-`badgehost.path(file, queryOpts)` is a helper that builds a full URL path from
+`badgehost.app.build(options)` creates a badgehost [express][] app. `options`
+can include the following keys:
+
+* `assertionDir` is the directory holding your assertion files, if you want
+  to override the defaults provided by the module.
+* `staticDir` is the directory holding your static files, if you want
+  to override the defaults provided by the module.
+
+The express app has the following additional methods:
+
+`app.url(file, queryOpts)` is a helper that builds a full URL path from
 
 * `file`: assertion file, e.g. `file.json`
 * `queryOpts`: 
     * `set`: object with properties to set on assertion
     * `merge`: object with properties to merge with assertion
     * `deep`: set to `true` for deep merging
+
+It's assumed that `app.url()` has been preceded by a successful call to
+`app.listen()`, since otherwise there is no way to know what port the 
+app is at.
+
+If you need to get the host-relative path to a particular file, you can use
+`app.path()`, which takes the same parameters as `app.url()`.
+
+  [express]: http://expressjs.com/
