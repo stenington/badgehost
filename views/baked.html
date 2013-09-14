@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+<style>
+  body {
+    padding: 1em;
+    width: 500px;
+  }
+
+  textarea {
+    height: 6em;
+  }
+
+  img {
+    max-width: 300px;
+  }
+</style>
+
+<figure>
+  <figcaption>
+    Right click and choose <i>Save image as...</i>
+  </figcaption>
+  <img class="baked" src="{{ dataURI }}">
+</figure>
+<form class="pure-form">
+  <label>Baked with:</label> 
+  <textarea type="text" class="pure-input-1 assertionUrl" readonly>{{ assertionUrl }}</textarea>
+</form>

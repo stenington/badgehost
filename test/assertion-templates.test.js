@@ -50,7 +50,7 @@ describe('Assertion templating', function() {
 
       it('verify.url should be public key url', function(done) {
         request(app)
-          .get('/test.json?sign=1')
+          .get('/test.json?type=signed')
           .expect(200, function(err, res) {
             if (err)
               return done(err);
@@ -65,6 +65,43 @@ describe('Assertion templating', function() {
           });
       });
     });
+  });
+
+  describe('when baked', function(){
+
+    it('assertionUrl should be assertion url', function(done) {
+      request(app)
+        .get('/test.json?type=baked')
+        .expect(200, function(err, res) {
+          var $ = cheerio.load(res.text);
+          var url = $('.assertionUrl').text();
+          url.should.equal('http://' + res.req._headers.host + '/test.json?');
+          done(err);
+        });
+    });
+
+    it('assertionUrl should preserve extra query parameters', function(done) {
+      request(app)
+        .get('/test.json?foo=1&type=baked&bar=2')
+        .expect(200, function(err, res) {
+          var $ = cheerio.load(res.text);
+          var url = $('.assertionUrl').text();
+          url.should.equal('http://' + res.req._headers.host + '/test.json?foo=1&bar=2');
+          done(err);
+        });
+    });
+    
+    it('dataURI should look like base64 encoded data URI', function(done) {
+      request(app)
+        .get('/test.json?type=baked')
+        .expect(200, function(err, res) {
+          var $ = cheerio.load(res.text);
+          var imgSrc = $('.baked').attr('src');
+          imgSrc.should.match(/data:image\/png;base64,[a-zA-Z0-9\/\+]+/);
+          done(err);
+        });
+    });
+
   });
 
   describe('`badge.json`', function() {
