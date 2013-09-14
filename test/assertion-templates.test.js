@@ -50,7 +50,7 @@ describe('Assertion templating', function() {
 
       it('verify.url should be public key url', function(done) {
         request(app)
-          .get('/test.json?sign=1')
+          .get('/test.json?type=signed')
           .expect(200, function(err, res) {
             if (err)
               return done(err);
