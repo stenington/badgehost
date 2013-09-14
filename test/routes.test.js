@@ -4,6 +4,7 @@ var should = require('should');
 var sinon = require('sinon');
 var cheerio = require('cheerio');
 var jws = require('jws');
+var bakery = require('openbadges-bakery');
 var keys = require('./test-keys');
 
 var badgehost = require('../');
@@ -97,6 +98,29 @@ describe('Routes', function(){
             var signature = $('.signature').text();
             jws.verify(signature, keys.public).should.be.true;
             done();
+          });
+      });
+    });
+  });
+
+  describe('?type=baked', function(){
+
+    ['/test.json', '/1.0/test-1.0.json', '/0.5/test-0.5.json'].forEach(function(path) {
+      it('should return baked badge', function(done){
+        request(app)
+          .get(path + '?type=baked')
+          .expect(200)
+          .expect('Content-Type', /text/)
+          .end(function(err, res) {
+            if (err)
+              return done(err);
+            var $ = cheerio.load(res.text);
+            var badgeSrc = $('.baked').attr('src').replace(/^data:image\/png;base64,/, '');
+            var badge = new Buffer(badgeSrc, 'base64');
+            bakery.extract(badge, function(err, data) {
+              data.should.endWith(path + '?');
+              done(err);
+            });
           });
       });
     });
