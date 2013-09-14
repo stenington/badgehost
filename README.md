@@ -73,8 +73,8 @@ nested objects.*
 * `?deep=1` effectively lets the merge work across linked 1.0 objects. Objects specified in the 
   `merge` parameter where the assertion has a string will get appended as `?deep=1&merge={...}`.
 * `?type=` 
-    * 'signed' will present you with a copy-and-pastable signature built from the specified assertion
-    * 'baked' will present you with a baked badge built from the specified assertion
+    * `signed` will present you with a copy-and-pastable signature built from the specified assertion
+    * `baked` will present you with a baked badge built from the specified assertion
 
 ## Module
 
